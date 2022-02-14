@@ -1,3 +1,38 @@
-# avi-advanced-options
+= avi-advanced-options
 
 In this repo you will find the API calls, terraform references, ansible, and avitools
+
+== VSCode
+We will use the VSCode in the API call with a plugin called REST Client
+
+
+
+== Avi Controller
+We do have the option to use CSFR token and also the Basic Authentication. We will see an example of both.
+We have the options to set the basic authentication from the UI, API and cli. Here we will set the basic authentication from the cli
+
+----
+bash# shell
+: > configure systemconfiguration
+: systemconfiguration> portal_configuration
+: systemconfiguration:portal_configuration> allow_basic_authentication
+Overwriting the previously entered value for allow_basic_authentication
+: systemconfiguration:portal_configuration> exit
+: systemconfiguration> exit
+Truncated view of the results:
+
++-------------------------------------+----------------------------------+
+| Field                               | Value                            |
++-------------------------------------+----------------------------------+
+| uuid                                | default                          |
+| portal_configuration                |                                  |
+|   enable_https                      | True                             |
+|   redirect_to_https                 | True                             |
+|   enable_http                       | True                             |
+|   enable_clickjacking_protection    | True                             |
+|   allow_basic_authentication        | True                             |
+|   password_strength_check           | False                            |
++-------------------------------------+----------------------------------+
+----
+
+
