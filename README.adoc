@@ -212,15 +212,19 @@ ssh into your controller export an VS. Since we are only doing VS, you will need
 ** then execute the convert script from json to ansible
 ** *python3 avi_config_to_ansible.py -c /tmp/demo.json  -o /tmp/demo*
 ** now that you do have the config files, go into the /tmp/demo and check the files. You will need to make a few adjustments.
-** first let's create a file with the following variables
-*** controller: IPaddress
-*** password: yourpassword
-*** username: admin
+** first let's create a file called avi.yml with the following variables. This is to simplify some tasks, as the new converted yml files do require the vars. Default are just set as variables. You could pass them as a -e within the ansible-playbook value.
+----
+controller: IPaddress
+password: yourpassword
+username: admin
+----
 ** add the two lines to your avi_config.yml under the hosts
-*** vars_files:
+----
+vars_files:
     - avi.yml
-** *execute and see what needs to be address*
-** *ansible-playbook avi_config.yml -e var
+----
+** *execute and see what needs to be addressed/changed.*
+** *ansible-playbook avi_config.yml*
 
 
 
