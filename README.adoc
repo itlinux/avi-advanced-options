@@ -10,6 +10,7 @@ We will use the VSCode in the API call with a plugin called REST Client
 == Avi Controller
 We do have the option to use CSFR token and also the Basic Authentication. We will see an example of both.
 We have the options to set the basic authentication from the UI, API and cli. Here we will set the basic authentication from the cli
+This allows you to learn more about how Avi takes and uses the code from the API aspect. The idea is to test it in an env which is mirroing your production, and the play can be reused over and over again.
 
 ----
 bash# shell
@@ -36,3 +37,181 @@ Truncated view of the results:
 ----
 
 
+
+
+== Avitools
+Here is the main repo for the link:https://github.com/avinetworks/avitools[Avitools]. +
+If you need some new updated pkgs like ansible run the following:
+
+.Remove ansible
+----
+pip uninstall ansible
+----
+
+.Install ansible
+----
+pip install --force-reinstall ansible ansible-core
+----
+
+
+== Terraform
+We do have a main Terraform supported repo, which contains examples for AWS, just updated in Jan 2022. We are working on the Azure and VMware options as well, this repo is all based on HCL codes.
+Here is the official link:https://github.com/vmware/terraform-provider-avi[repo] +
+We do have a Terraform module, which deploys in all clouds, but it does leverage ansible for the configuration.
+
+
+
+
+== Virtual Service – Lab
+Once we have a VS running, and it was deployed manually, we can look at the json config of that service. Using a json plugin in your browser, we can go to the https://<controller>/api/virtualservice. Here is a snip of the code:
+
+----
+/ 20220214125411
+// https://demo-avi/api/virtualservice
+
+{
+  "count": 3,
+  "results": [
+    {
+      "_last_modified": "1644036009776638",
+      "active_standby_se_tag": "ACTIVE_STANDBY_SE_1",
+      "advertise_down_vs": false,
+      "allow_invalid_client_cert": false,
+      "analytics_policy": {
+        "all_headers": true,
+        "client_insights": "NO_INSIGHTS",
+        "full_client_logs": {
+          "duration": 0,
+          "enabled": true,
+          "throttle": 10
+        },
+        "learning_log_policy": {
+          "enabled": false
+        },
+        "metrics_realtime_update": {
+          "duration": 0,
+          "enabled": false
+        },
+        "significant_log_throttle": 10,
+        "udf_log_throttle": 10
+      },
+      "analytics_profile_ref": "https://demo-avi/api/analyticsprofile/analyticsprofile-5d08b0ee-1910-4a49-8257-51f2cd28bd2a",
+      "application_profile_ref": "https://demo-avi/api/applicationprofile/applicationprofile-8ae7956a-5e4e-4eb5-96ac-8687d1587a09",
+      "bulk_sync_kvcache": false,
+      "close_client_conn_on_config_update": false,
+      "cloud_ref": "https://demo-avi/api/cloud/cloud-b48ade75-d838-4a1c-b37c-ff37d895a418",
+      "cloud_type": "CLOUD_VCENTER",
+      "delay_fairness": false,
+      "east_west_placement": false,
+      "enable_autogw": true,
+      "enabled": true,
+      "error_page_profile_ref": "https://demo-avi/api/errorpageprofile/errorpageprofile-2717b695-1034-470c-a236-714d3260c7c0",
+      "flow_dist": "LOAD_AWARE",
+      "flow_label_type": "NO_LABEL",
+      "http_policies": [
+        {
+          "http_policy_set_ref": "https://demo-avi/api/httppolicyset/httppolicyset-f6e27166-1afc-4765-b658-ce0e7139edc4",
+          "index": 11
+        }
+      ],
+----
+
+To look at the same option from the cli we will do the following:
+
+----
+terminal display_api_details
+[admin:admin]: > show virtualservice
+dns     vs1     vsdemo
+[admin:admin]: > show virtualservice vsdemo
+REST API Request
+	Method: GET
+	API: /api/virtualservice/virtualservice-d4c5fb17-2f9a-4951-a7fb-668621228aed#vsdemo?join_subresources=runtime&join=vsvip:vsvip_ref
+	Data: {}
+	Response: "{\"url\": \"https://localhost/api/virtualservice/virtualservice-d4c5fb17-2f9a-4951-a7fb-668621228aed#vsdemo\", \"uuid\": \"virtualservice-d4c5fb17-2f9a-4951-a7fb-668621228aed\", \"name\": \"vsdemo\", \"enabled\": true, \"application_profile_ref\": \"https://localhost/api/applicationprofile/applicationprofile-8ae7956a-5e4e-4eb5-96ac-8687d1587a09#terraform_https_application_profile\", \"se_group_ref\": \"https://localhost/api/serviceenginegroup/serviceenginegroup-441526be-0e63-44e0-82d2-9f4bfeda752d#Default-Group\", \"network_security_policy_ref\": \"https://localhost/api/networksecuritypolicy/networksecuritypolicy-b8c962dd-67f5-46f1-8c8f-32f92659fc84#vs-vsdemo-vcenter-ns\", \"vrf_context_ref\": \"https://localhost/api/vrfcontext/vrfcontext-25a2526a-5fde-42ff-8f31-20c574c07c5f#global\", \"analytics_profile_ref\": \"https://localhost/api/analyticsprofile/analyticsprofile-5d08b0ee-1910-4a49-8257-51f2cd28bd2a#System-Analytics-Profile\", \"tenant_ref\": \"https://localhost/api/tenant/admin#admin\", \"cloud_ref\": \"https://localhost/api/cloud/cloud-b48ade75-d838-4a1c-b37c-ff37d895a418#vcenter\", \"vsvip_ref\": \"https://localhost/api/vsvip/vsvip-9963eb4a-d34a-48c6-9e21-afc2958e2e85#terraform-vip\", \"_last_modified\": \"1644036009776638\", \"active_standby_se_tag\": \"ACTIVE_STANDBY_SE_1\", \"advertise_down_vs\": false, \"allow_invalid_client_cert\": false, \"analytics_policy\": {\"all_headers\": true, \"client_insights\": \"NO_INSIGHTS\", \"full_client_logs\": {\"duration\": 0, \"enabled\": true, \"throttle\": 10}, \"learning_log_policy\": {\"enabled\": false}, \"metrics_realtime_update\": {\"duration\": 0, \"enabled\": false}, \"significant_log_throttle\": 10, \"udf_log_throttle\": 10}, \"bulk_sync_kvcache\": false, \"close_client_conn_on_config_update\": false, \"cloud_type\": \"CLOUD_VCENTER\", \"delay_fairness\": false, \"east_west_placement\": false, \"enable_autogw\": true, \"error_page_profile_ref\": \"https://localhost/api/errorpageprofile/errorpageprofile-2717b695-1034-470c-a236-714d3260c7c0#Custom-Error-Page-Profile\", \"flow_dist\": \"LOAD_AWARE\", \"flow_label_type\": \"NO_LABEL\", \"http_policies\": [{\"http_policy_set_ref\": \"https://localhost/api/httppolicyset/httppolicyset-f6e27166-1afc-4765-b658-ce0e7139edc4#vsdemo-vcenter-HTTP-Policy-Set-0\", \"index\": 11}], \"ign_pool_net_reach\": false, \"limit_doser\": false, \"max_cps_per_client\": 0, \"network_profile_ref\": \"https://localhost/api/networkprofile/networkprofile-f5d7399e-008a-4ef6-baa5-0b41d71ee210#tf-network-profile\", \"pool_ref\": \"https://localhost/api/pool/pool-3fc9d119-f0fc-4fb3-bfad-fed69fd9257a#demo-pool\", \"remove_listening_port_on_vs_down\": false, \"scaleout_ecmp\": false, \"services\": [{\"enable_http2\": false, \"enable_ssl\": true, \"horizon_internal_ports\": false, \"port\": 443, \"port_range_end\": 443}], \"ssl_key_and_certificate_refs\": [\"https://localhost/api/sslkeyandcertificate/sslkeyandcertificate-f9aa5acd-f848-47f1-85ab-a841d523b173#System-Default-Cert\"], \"ssl_profile_ref\": \"https://localhost/api/sslprofile/sslprofile-1db93ae6-42b4-4766-a0fb-7df1998fa3a3#System-Standard-PFS\", \"ssl_sess_cache_avg_size\": 1024, \"traffic_enabled\": true, \"type\": \"VS_TYPE_NORMAL\", \"use_bridge_ip_as_vip\": false, \"use_vip_as_snat\": false, \"vh_type\": \"VS_TYPE_VH_SNI\", \"weight\": 1, \"marked_for_delete\": false, \"redis_db\": 6, \"redis_port\": 5027, \"self_se_election\": true, \"tls_ticket_key\": [{\"aes_key\": \"hTe0f5hIR6EiNy29xQkqBQ==\", \"hmac_key\": \"aJ7pJHFvLR7jikzgVk+54w==\", \"name\": \"b2d01c1e-a425-4623-9ec7-7f0c5782788c\"}, {\"aes_key\": \"TomP0zPx4Nz7pdmJRXroeQ==\", \"hmac_key\": \"3szm2LDvVveWSEY97IZdoA==\", \"name\": \"900cb566-671b-4637-8b41-ee972fc9d356\"}, {\"aes_key\": \"tlrBCpFG8TD/3uMbyPyNng==\", \"hmac_key\": \"Y4vDNh9ST+t5GJDPaYdnoA==\", \"name\": \"9a147df9-cbc9-4c57-9449-ba35ee0c2a07\"}], \"version\": \"113\", \"vip_runtime\": [{\"first_se_assigned_time\": {\"secs\": \"1643994308\", \"usecs\": \"546363\"}, \"num_additional_se\": 0, \"requested_resource\": {\"num_se\": 1, \"num_standby_se\": 0}, \"se_list\": [{\"active_on_cloud\": true, \"active_on_se\": true, \"admin_down_requested\": false, \"attach_ip_in_progress\": false, \"cloud_programming_done\": true, \"cloud_programming_status\": \"Virtual Service IP is reachable in the Cloud\", \"delete_in_progress\": false, \"detach_ip_in_progress\": false, \"incarnation\": \"2022-02-04 17:05:08.546603\", \"is_portchannel\": false, \"is_primary\": true, \"is_standby\": false, \"memory\": 1987, \"mgmt_ip\": {\"addr\": \"10.206.115.99\", \"type\": \"V4\"}, \"scaleout_in_progress\": false, \"se_programming_done\": true, \"se_ready_in_progress\": false, \"se_ref\": \"https://localhost/api/serviceengine/se-00505681ab0d#Avi_RM_SE_AA-se-dqtxe\", \"sec_idx\": 0, \"vcpus\": 2, \"vip6_subnet_mask\": 128, \"vip_intf_list\": [{\"is_portchannel\": false, \"vip_intf_ip\": {\"addr\": \"10.206.115.126\", \"type\": \"V4\"}, \"vip_intf_mac\": \"00:50:56:81:48:dd\", \"vlan_id\": 0}], \"vip_intf_mac\": \"00:50:56:81:48:dd\", \"vip_subnet_mask\": 32, \"vlan_id\": 0, \"vnic\": [{\"mac\": \"00:50:56:81:48:dd\", \"type\": \"VNIC_TYPE_FE\"}, {\"mac\": \"00:50:56:81:48:dd\", \"type\": \"VNIC_TYPE_BE\"}]}], \"vip_id\": \"0\"}], \"vsvip_ref_data\": {\"uuid\": \"vsvip-9963eb4a-d34a-48c6-9e21-afc2958e2e85\", \"name\": \"terraform-vip\", \"vip\": [{\"vip_id\": \"0\", \"ip_address\": {\"addr\": \"10.206.115.116\", \"type\": \"V4\"}, \"enabled\": true, \"discovered_networks\": [{\"subnet\": [{\"ip_addr\": {\"addr\": \"10.206.112.0\", \"type\": \"V4\"}, \"mask\": 22}], \"network_ref\": \"https://localhost/api/network/dvportgroup-76-cloud-b48ade75-d838-4a1c-b37c-ff37d895a418#vxw-dvs-34-virtualwire-3-sid-6120002-wdc-06-vc12-avi-mgmt\"}], \"auto_allocate_ip\": false, \"auto_allocate_floating_ip\": false, \"avi_allocated_vip\": false, \"avi_allocated_fip\": false, \"auto_allocate_ip_type\": \"V4_ONLY\", \"prefix_length\": 32}], \"east_west_placement\": false, \"configpb_attributes\": {\"version\": 1}, \"url\": \"https://localhost/api/vsvip/vsvip-9963eb4a-d34a-48c6-9e21-afc2958e2e85#terraform-vip\", \"vrf_context_ref\": \"https://localhost/api/vrfcontext/vrfcontext-25a2526a-5fde-42ff-8f31-20c574c07c5f#global\", \"tenant_ref\": \"https://localhost/api/tenant/admin#admin\", \"cloud_ref\": \"https://localhost/api/cloud/cloud-b48ade75-d838-4a1c-b37c-ff37d895a418#vcenter\"}, \"runtime\": {\"oper_status\": {\"state\": \"OPER_UP\", \"last_changed_time\": {\"secs\": 1643994344, \"usecs\": 115358}}, \"percent_ses_up\": 100, \"vip_summary\": [{\"vip_id\": \"0\", \"oper_status\": {\"state\": \"OPER_UP\", \"last_changed_time\": {\"secs\": 1643994344, \"usecs\": 115358}}, \"service_engine\": [{\"uuid\": \"se-00505681ab0d\", \"primary\": true, \"standby\": false, \"connected\": true, \"mgmt_ip\": {\"addr\": \"10.206.115.99\", \"type\": \"V4\"}, \"active_on_cloud\": true, \"active_on_se\": true, \"url\": \"https://localhost/api/serviceengine/se-00505681ab0d#Avi_RM_SE_AA-se-dqtxe\"}], \"num_se_requested\": 1, \"num_se_assigned\": 1, \"percent_ses_up\": 100}]}}"
+
++------------------------------------+-----------------------------------------------------+
+| Field                              | Value                                               |
++------------------------------------+-----------------------------------------------------+
+| uuid                               | virtualservice-d4c5fb17-2f9a-4951-a7fb-668621228aed |
+| name                               | vsdemo                                              |
+| enabled                            | True                                                |
+| services[1]                        |                                                     |
+|   port                             | 443                                                 |
+|   enable_ssl                       | True                                                |
+|   port_range_end                   | 443                                                 |
+|   enable_http2                     | False                                               |
+|   horizon_internal_ports           | False                                               |
+| application_profile_ref            | terraform_https_application_profile                 |
+| network_profile_ref                | tf-network-profile                                  |
+| pool_ref                           | demo-pool                                           |
+| se_group_ref                       | Default-Group                                       |
+| network_security_policy_ref        | vs-vsdemo-vcenter-ns                                |
+| http_policies[1]                   |                                                     |
+|   index                            | 11                                                  |
+|   http_policy_set_ref              | vsdemo-vcenter-HTTP-Policy-Set-0                    |
+| ssl_key_and_certificate_refs[1]    | System-Default-Cert                                 |
+| ssl_profile_ref                    | System-Standard-PFS                                 |
+| analytics_policy                   |                                                     |
+|   full_client_logs                 |                                                     |
+|     enabled                        | True                                                |
+|     duration                       | 0 min                                               |
+|     throttle                       | 10 per_second                                       |
+|   client_insights                  | NO_INSIGHTS                                         |
+|   all_headers                      | True                                                |
+|   metrics_realtime_update          |                                                     |
+|     enabled                        | False                                               |
+|     duration                       | 0 min                                               |
+|   udf_log_throttle                 | 10 per_second                                       |
+|   significant_log_throttle         | 10 per_second                                       |
+|   learning_log_policy              |                                                     |
+|     enabled                        | False                                               |
+| vrf_context_ref                    | global                                              |
+| enable_autogw                      | True                                                |
+| analytics_profile_ref              | System-Analytics-Profile                            |
+| weight                             | 1                                                   |
+| delay_fairness                     | False                                               |
+| max_cps_per_client                 | 0                                                   |
+| limit_doser                        | False                                               |
+| type                               | VS_TYPE_NORMAL                                      |
+| cloud_type                         | CLOUD_VCENTER                                       |
+| use_bridge_ip_as_vip               | False                                               |
+| flow_dist                          | LOAD_AWARE                                          |
+| ign_pool_net_reach                 | False                                               |
+| ssl_sess_cache_avg_size            | 1024                                                |
+| remove_listening_port_on_vs_down   | False                                               |
+| close_client_conn_on_config_update | False                                               |
+| bulk_sync_kvcache                  | False                                               |
+| advertise_down_vs                  | False                                               |
+| tenant_ref                         | admin                                               |
+| cloud_ref                          | vcenter                                             |
+| east_west_placement                | False                                               |
+| scaleout_ecmp                      | False                                               |
+| active_standby_se_tag              | ACTIVE_STANDBY_SE_1                                 |
+| flow_label_type                    | NO_LABEL                                            |
+| vsvip_ref                          | terraform-vip                                       |
+| use_vip_as_snat                    | False                                               |
+| error_page_profile_ref             | Custom-Error-Page-Profile                           |
+| traffic_enabled                    | True                                                |
+| allow_invalid_client_cert          | False                                               |
+| vh_type                            | VS_TYPE_VH_SNI                                      |
++------------------------------------+-----------------------------------------------------+
+----
+During this workshop we will create an ansible from this VS. We will use the Terraform as well but it's good to learn those steps.
+
+***Exercise***
+ssh into your controller export an VS. Since we are only doing VS, you will need to use a pool that's already there and also a VIP that's already in the Avi Controller. All of them of course can be done with Ansible or terraform. For this part we just do the VS. 
+
+** *ssh controller*
+** shell into controller *(shell --u admin)*
+** check your virtualservice with *(show virtualservice)*
+** *export configuration skip_default obj_type virtualservice file /tmp/demo.json*
+** *bash* (to obtain a bash prompt)
+** *mkdir /tmp/demo* (create a folder to host the output of the convert script)
+** cd to _/opt/avi/python/lib/avi/migrationtools/ansible_
+** then execute the convert script from json into ansible
+** *python3 avi_config_to_ansible.py -c /tmp/demo.json  -o /tmp/demo*
+** *execute and see what needs to be address, you probably have some options that are not needed*
+
+
+
+== Troubleshooting
