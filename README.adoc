@@ -199,7 +199,7 @@ REST API Request
 During this workshop we will create an ansible from this VS. We will use the Terraform as well but it's good to learn those steps.
 
 ***Exercise***
-ssh into your controller export an VS. Since we are only doing VS, you will need to use a pool that's already there and also a VIP that's already in the Avi Controller. All of them of course can be done with Ansible or terraform. For this part we just do the VS. 
+ssh into your controller export an VS. Since we are only doing VS, you will need to use a pool that's already there and also a VIP that's already in the Avi Controller. All of them of course can be done with Ansible or terraform. For this part we just do the VS.
 
 ** *ssh controller*
 ** shell into controller *(shell --u admin)*
@@ -215,3 +215,5 @@ ssh into your controller export an VS. Since we are only doing VS, you will need
 
 
 == Troubleshooting
+
+We will learn and look at the logs to be able to track down what has happened.
