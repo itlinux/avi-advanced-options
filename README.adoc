@@ -201,16 +201,26 @@ During this workshop we will create an ansible from this VS. We will use the Ter
 ***Exercise***
 ssh into your controller export an VS. Since we are only doing VS, you will need to use a pool that's already there and also a VIP that's already in the Avi Controller. All of them of course can be done with Ansible or terraform. For this part we just do the VS.
 
-** *ssh controller*
-** shell into controller *(shell --u admin)*
+** *ssh into the controller*
+** shell into the controller subshell *(shell --u admin)*
 ** check your virtualservice with *(show virtualservice)*
+** once you see which virtualservice you can export it
 ** *export configuration skip_default obj_type virtualservice file /tmp/demo.json*
 ** *bash* (to obtain a bash prompt)
-** *mkdir /tmp/demo* (create a folder to host the output of the convert script)
+** *mkdir /tmp/demo* (create a folder to host the output of the convert script, it will create two files avi_config.yml and avi_config_delete.yml)
 ** cd to _/opt/avi/python/lib/avi/migrationtools/ansible_
-** then execute the convert script from json into ansible
+** then execute the convert script from json to ansible
 ** *python3 avi_config_to_ansible.py -c /tmp/demo.json  -o /tmp/demo*
-** *execute and see what needs to be address, you probably have some options that are not needed*
+** now that you do have the config files, go into the /tmp/demo and check the files. You will need to make a few adjustments.
+** first let's create a file with the following variables
+*** controller: IPaddress
+*** password: yourpassword
+*** username: admin
+** add the two lines to your avi_config.yml under the hosts
+*** vars_files:
+    - avi.yml
+** *execute and see what needs to be address*
+** *ansible-playbook avi_config.yml -e var
 
 
 
