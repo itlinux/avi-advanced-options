@@ -202,6 +202,7 @@ During this workshop we will create an ansible from this VS. We will use the Ter
 ssh into your controller export an VS. Since we are only doing VS, you will need to use a pool that's already there and also a VIP that's already in the Avi Controller. All of them of course can be done with Ansible or terraform. For this part we just do the VS.
 
 ** *ssh into the controller*
+** *sudo -i*
 ** shell into the controller subshell *(shell --u admin)*
 ** check your virtualservice with *(show virtualservice)*
 ** once you see which virtualservice you can export it
