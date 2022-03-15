@@ -1,0 +1,510 @@
+# @name csr
+GET https://10.206.114.247/login
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+Content-Type: application/json
+
+###
+
+
+# --user mitch:xxxx \
+
+POST {{baseurl}}/login HTTP/1.1
+Accept: application/json,test/plain,*/*
+Host: {{hostname}}
+X-Avi-Version: {{apiversion}}
+Content-Type: application/json;charset=utf-8
+Cookie: avi-sessionid=
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+
+
+# POST  requests.post('https://10.206.114.247/login', verify=False, data={'username': 'admin', 'password': '{{$dotenv password}}'})
+###
+# @name pool
+get https://10.206.114.247/api/pool/?name=p1 
+X-Avi-Version: 21.1.3
+Authorization: {{{{csr.response.headers.Set-Cookie[*]csrftoken}}}}
+Cookie: {{csr.response.headers.Set-Cookie}}
+
+# 
+###
+post https://{{$dotenv avictl}}/api/pool/
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+Content-Type: application/json
+X-Avi-Version: 21.1.3
+
+{
+      "name": "p1",
+      "cloud_ref": "https://{{$dotenv avictl}}/api/cloud/?name=vcenter",
+      "tenant_ref": "admin",
+      "enable_http2": false,
+      "servers": [
+        {
+            "ip": {
+                "type": "V4",
+                "addr": "{{$dotenv server1}}"
+            },
+            "enabled": true
+        },
+        {
+            "ip": {
+                "type": "V4",
+                "addr": "{{$dotenv server2}}"
+            },
+            "enabled": true
+        }
+    ]
+}
+
+###
+
+GET https://{{$dotenv avictl}}/api/pool/?name=p1
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+Content-Type: application/json
+X-Avi-Version: 21.1.3
+
+###
+PATCH https://{{$dotenv avictl}}/api/pool/{{pool.response.body.results.[*].uuid}}
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+Content-Type: application/json
+X-Avi-Version: 21.1.3 
+
+{
+    "add": {
+"lb_algorithm": "LB_ALGORITHM_ROUND_ROBIN" 
+  }
+}
+
+###
+DELETE https://{{$dotenv avictl}}/api/pool/{{pool.response.body.results.[*].uuid}}
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+Content-Type: application/json
+X-Avi-Version: 21.1.3
+
+###
+
+
+post https://{{$dotenv avictl}}/api/vsvip
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+Content-Type: application/json
+X-Avi-Version: 21.1.3
+
+{
+"name": "remo-vip",
+"tenant_ref": "/api/tenant/admin",
+"cloud_ref": "/api/cloud/?name=vcenter",
+"vip": [
+{
+    "vip_id": "2",
+    "ip_address": {
+    "addr": "10.206.114.156",
+    "type": "V4"
+    },
+"enabled": false
+  }
+ ]
+}
+
+###
+# @name vip
+GET https://{{$dotenv avictl}}/api/vsvip/?name=remo-vip
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+
+
+###
+DELETE  https://{{$dotenv avictl}}/api/vsvip/{{vip.response.body.results.[*].uuid}}
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+
+
+###
+POST https://{{$dotenv avictl}}/api/virtualservice/
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+Content-Type: Application/json
+
+   {
+    "name": "demo-app",
+    "enabled": true,
+    "cloud_ref": "/api/cloud/?name=vcenter",
+    "vsvip_ref": "/api/vsvip/?name=remo-vip",
+        "services": [
+         {
+           "enable_ssl": false,
+              "port": 80
+           }
+        ],
+      "pool_ref": "/api/pool/?name=p1"
+   }
+
+###
+# @name VS
+GET https://{{$dotenv avictl}}/api/virtualservice/?name=demo-app
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+Content-Type: Application/json
+
+###
+DELETE https://{{$dotenv avictl}}/api/virtualservice/{{VS.response.body.results.[*].uuid}}
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+Content-Type: Application/json
+
+
+###
+# Micro version of VS deletion with dependency 
+DELETE https://{{$dotenv avictl}}/api/macro
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+Content-Type: Application/json
+
+{
+    "model_name": "VirtualService",
+    "data": {
+        "uuid": "{{VS.response.body.results.[*].uuid}}"
+    }
+}
+
+
+###
+POST https://{{$dotenv avictl}}/api/macro
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+Content-Type: Application/json
+
+{
+    "model_name": "Application",
+    "data": {
+        "name": "app1",
+        "virtualservice_refs_data": [
+            {
+                "name": "app_vs3",
+                "enabled": true,
+                "traffic_enabled": true,
+                "tenant_ref": "/api/tenant?name=admin",
+                "cloud_ref": "/api/cloud?name=Default-Cloud",
+                "se_group_ref": "/api/serviceenginegroup?name=Default-Group",
+                "services": [
+                    {
+                        "enable_ssl": false,
+                        "port_range_end": 80,
+                        "port": 80
+                    },
+                    {
+                        "enable_ssl": true,
+                        "port_range_end": 443,
+                        "port": 443
+                    }
+                ],
+                "vsvip_ref_data": {
+                    "name": "app_vsvip3",
+                    "tenant_ref": "/api/tenant?name=admin",
+                    "cloud_ref": "/api/cloud?name=Default-Cloud",
+                    "vip": [
+                        {
+                            "vip_id": "1",
+                            "enabled": true,
+                            "ip_address": {
+                                "type": "V4",
+                                "addr": "12.3.3.3"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "vs_l7proxy_template",
+                "enabled": true,
+                "traffic_enabled": true,
+                "tenant_ref": "/api/tenant?name=admin",
+                "cloud_ref": "/api/cloud?name=Default-Cloud",
+                "se_group_ref": "/api/serviceenginegroup?name=Default-Group",
+                "vsvip_ref_data": {
+                    "name": "vsvip_l7proxy_template",
+                    "tenant_ref": "/api/tenant?name=admin",
+                    "cloud_ref": "/api/cloud?name=Default-Cloud",
+                    "vip": [
+                        {
+                            "vip_id": "1",
+                            "enabled": true,
+                            "ip_address": {
+                                "type": "V4",
+                                "addr": "11.11.11.11"
+                            }
+                        }
+                    ]
+                },
+                "ssl_profile_ref_data": {
+                    "name": "sslprofile_l7proxy_template",
+                    "tenant_ref": "/api/tenant?name=admin",
+                    "accepted_ciphers": "AES:3DES:RC4",
+                    "type": "SSL_PROFILE_TYPE_APPLICATION",
+                    "accepted_versions": [
+                        {
+                            "type": "SSL_VERSION_TLS1"
+                        },
+                        {
+                            "type": "SSL_VERSION_TLS1_1"
+                        },
+                        {
+                            "type": "SSL_VERSION_TLS1_2"
+                        }
+                    ]
+                },
+                "services": [
+                    {
+                        "enable_ssl": false,
+                        "port_range_end": 80,
+                        "port": 80
+                    },
+                    {
+                        "enable_ssl": true,
+                        "port_range_end": 443,
+                        "port": 443
+                    }
+                ],
+                "pool_ref_data": {
+                    "name": "l7proxy_template_pool1",
+                    "tenant_ref": "/api/tenant?name=admin",
+                    "cloud_ref": "/api/cloud?name=Default-Cloud",
+                    "enabled": true,
+                    "lb_algorithm": "LB_ALGORITHM_LEAST_CONNECTIONS",
+                    "use_service_port": false,
+                    "default_server_port": 80,
+                    "ssl_profile_ref": "/api/sslprofile/?name=System-Standard",
+                    "servers": [
+                        {
+                            "ratio": 1,
+                            "ip": {
+                                "type": "V4",
+                                "addr": "172.16.10.1"
+                            },
+                            "hostname": "server1.template.com",
+                            "enabled": true
+                        }
+                    ],
+                    "health_monitor_refs_data": [
+                        {
+                            "name": "l7proxy_http_template_health_monitor1",
+                            "tenant_ref": "/api/tenant?name=admin",
+                            "receive_timeout": 4,
+                            "failed_checks": 3,
+                            "http_monitor": {
+                                "http_request": "HEAD / HTTP/1.0",
+                                "http_response_code": [
+                                    "HTTP_2XX",
+                                    "HTTP_3XX"
+                                ]
+                            },
+                            "type": "HEALTH_MONITOR_HTTP",
+                            "send_interval": 10,
+                            "successful_checks": 3
+                        }
+                    ],
+                    "application_persistence_profile_ref_data": {
+                        "name": "l7proxy_template_cookie_persistence1",
+                        "tenant_ref": "/api/tenant/?name=admin",
+                        "app_cookie_persistence_profile": {
+                            "prst_hdr_name": "customhttpcookiename",
+                            "timeout": 20
+                        },
+                        "persistence_type": "PERSISTENCE_TYPE_APP_COOKIE"
+                    }
+                },
+                "analytics_profile_ref_data": {
+                    "name": "analytics_profile_l7proxy_template",
+                    "tenant_ref": "/api/tenant?name=admin",
+                    "client_log_streaming_config": {
+                        "external_server_port": 514,
+                        "max_logs_per_second": 100,
+                        "log_types_to_send": "LOGS_ALL",
+                        "external_server": "10.10.10.10"
+                    }
+                },
+                "application_profile_ref_data": {
+                    "type": "APPLICATION_PROFILE_TYPE_HTTP",
+                    "name": "application_profile_l7proxy_template",
+                    "tenant_ref": "/api/tenant?name=admin",
+                    "http_profile": {
+                        "xff_enabled": true,
+                        "xff_alternate_name": "X-Forwarded-For",
+                        "http_to_https": true,
+                        "connection_multiplexing_enabled": true
+                    }
+                },
+                "network_profile_ref_data": {
+                    "name": "network_profile_l7proxy_template",
+                    "tenant_ref": "/api/tenant?name=admin",
+                    "profile": {
+                        "tcp_proxy_profile": {
+                            "idle_connection_timeout": 600
+                        },
+                        "type": "PROTOCOL_TYPE_TCP_PROXY"
+                    }
+                },
+                "ssl_key_and_certificate_refs": [
+                    "/api/sslkeyandcertificate?name=System-Default-Cert"
+                ],
+                "http_policies": [
+                    {
+                        "index": 11,
+                        "http_policy_set_ref_data": {
+                            "name": "l7proxy_template_redirect_policyset",
+                            "tenant_ref": "/api/tenant?name=admin",
+                            "http_request_policy": {
+                                "rules": [
+                                    {
+                                        "name": "redirect-rule1",
+                                        "index": 1,
+                                        "enable": true,
+                                        "match": {
+                                            "path": {
+                                                "match_case": "INSENSITIVE",
+                                                "match_str": [
+                                                    "/sample/path1",
+                                                    "/sample/path2"
+                                                ],
+                                                "match_criteria": "CONTAINS"
+                                            }
+                                        },
+                                        "redirect_action": {
+                                            "keep_query": true,
+                                            "status_code": "HTTP_REDIRECT_STATUS_CODE_302",
+                                            "protocol": "HTTPS",
+                                            "port": 443
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "index": 12,
+                        "http_policy_set_ref_data": {
+                            "name": "l7proxy_template_forward_policyset",
+                            "tenant_ref": "/api/tenant?name=admin",
+                            "http_request_policy": {
+                                "rules": [
+                                    {
+                                        "name": "forward-rule1",
+                                        "index": 1,
+                                        "enable": true,
+                                        "match": {
+                                            "hdrs": [
+                                                {
+                                                    "match_case": "INSENSITIVE",
+                                                    "hdr": "X-Sample-Header",
+                                                    "value": [
+                                                        "HeaderValue"
+                                                    ],
+                                                    "match_criteria": "HDR_CONTAINS"
+                                                }
+                                            ]
+                                        },
+                                        "switching_action": {
+                                            "action": "HTTP_SWITCHING_SELECT_POOL",
+                                            "pool_ref_data": {
+                                                "name": "vs_l7proxy_template_forward_pool",
+                                                "tenant_ref": "/api/tenant?name=admin",
+                                                "cloud_ref": "/api/cloud?name=Default-Cloud",
+                                                "enabled": true,
+                                                "lb_algorithm": "LB_ALGORITHM_LEAST_CONNECTIONS",
+                                                "use_service_port": false,
+                                                "default_server_port": 80,
+                                                "ssl_profile_ref": "/api/sslprofile/?name=System-Standard",
+                                                "servers": [
+                                                    {
+                                                        "ratio": 1,
+                                                        "ip": {
+                                                            "type": "V4",
+                                                            "addr": "172.16.10.1"
+                                                        },
+                                                        "hostname": "server1.template.com",
+                                                        "enabled": true
+                                                    }
+                                                ],
+                                                "health_monitor_refs_data": [
+                                                    {
+                                                        "name": "l7proxy_http_template_health_monitor2",
+                                                        "tenant_ref": "/api/tenant?name=admin",
+                                                        "receive_timeout": 4,
+                                                        "failed_checks": 3,
+                                                        "http_monitor": {
+                                                            "http_request": "HEAD / HTTP/1.0",
+                                                            "http_response_code": [
+                                                                "HTTP_2XX",
+                                                                "HTTP_3XX"
+                                                            ]
+                                                        },
+                                                        "type": "HEALTH_MONITOR_HTTP",
+                                                        "send_interval": 10,
+                                                        "successful_checks": 3
+                                                    }
+                                                ],
+                                                "application_persistence_profile_ref_data": {
+                                                    "name": "l7proxy_template_cookie_persistence2",
+                                                    "tenant_ref": "/api/tenant/?name=admin",
+                                                    "app_cookie_persistence_profile": {
+                                                        "prst_hdr_name": "customhttpcookiename",
+                                                        "timeout": 20
+                                                    },
+                                                    "persistence_type": "PERSISTENCE_TYPE_APP_COOKIE"
+                                                }
+                                            },
+                                            "status_code": "HTTP_LOCAL_RESPONSE_STATUS_CODE_200"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+###
+# @name app3
+GET https://{{$dotenv avictl}}/api/virtualservice/?name=app_vs3
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+
+
+###
+DELETE https://{{$dotenv avictl}}/api/macro
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+Content-Type: Application/json
+
+{
+    "model_name": "VirtualService",
+    "data": {
+        "uuid": "{{app3.response.body.results.[*].uuid}}"
+    }
+}
+
+###
+# @name vs_l7proxy
+GET https://{{$dotenv avictl}}/api/virtualservice/?name=vs_l7proxy_template
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+###
+
+DELETE https://{{$dotenv avictl}}/api/macro
+Authorization: Basic {{$dotenv user}} {{$dotenv password}}
+X-Avi-Version: 21.1.3
+Content-Type: Application/json
+
+{
+    "model_name": "VirtualService",
+    "data": {
+        "uuid": "{{vs_l7proxy.response.body.results.[*].uuid}}"
+    }
+}
+
