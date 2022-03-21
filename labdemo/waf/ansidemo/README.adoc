@@ -50,4 +50,3 @@ localhost                  : ok=1    changed=1    unreachable=0    failed=0    s
 ----
 ansible-playbook log4j-pre-crs.yml  -e @variables.yml
 ----
-
