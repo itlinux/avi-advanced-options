@@ -1,0 +1,6 @@
+avi_credentials:
+  controller: yourcontroller
+  username: admin
+  password: "yourpassword"
+  api_version: 21.1.3
+

@@ -1,0 +1,18 @@
+pool_name: "demo_pool_ansible"
+cloud_name: "aws"
+pool_description: "pool_description_for_our_demo"
+avi_version: "21.1.3"
+state: "present"
+IP1: "10.0.1.121"
+IP2: "10.0.1.122"
+app_name: "demo_ansible_app"
+tenant: "admin"
+vip_app_vip_id: false
+vip_auto_allocate_ip: false
+vip_enabled: true
+vip_auto_allocate_floating_ip: true
+vip_avi_allocated_vip: false
+app_vip: "10.0.1.120"
+service_port: "443"
+set_ssl: true
+

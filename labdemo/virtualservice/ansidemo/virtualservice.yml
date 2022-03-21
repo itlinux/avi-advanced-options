@@ -1,0 +1,67 @@
+# Author Remo Mattei
+# Email: rm@rm.ht
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+  vars_files:
+    - avictl.yml
+    - vars.yml
+  tasks:
+    - name: Create a Pool with two servers and HTTP monitor
+      community.network.avi_pool:
+        avi_credentials: "{{ avi_credentials | default(omit)}}"
+        name: "{{ pool_name }}"
+        cloud_ref: "/api/cloud/?name={{ cloud_name }}"
+        description: "{{ pool_description }}"
+        api_version: "{{ avi_version }}"
+        state: "{{ state }}"
+        health_monitor_refs:
+            - '/api/healthmonitor?name={{ hmonitor }}'
+        servers:
+            - ip:
+                addr: "{{ IP1 }}"
+                type: V4
+            - ip:
+                addr: "{{ IP2 }}"
+                type: V4
+
+    - name: "Avi Example | Create VS VIP | {{ app_name }}"
+      avi_vsvip:
+        name: vsvip-{{ app_name }}
+        avi_credentials: '{{ avi_credentials }}'
+        tenant: "{{ tenant }}"
+        tenant_ref: '/api/tenant/?name={{ tenant }}'
+        cloud_ref: "/api/cloud/?name={{ cloud_name }}"
+        state: "{{ state }}"
+        vip:
+        - vip_id: '{{ vip_app_vip_id }}'
+          avi_allocated_fip: "{{ vip_avi_allocated_fip }}"
+          auto_allocate_ip: "{{ vip_auto_allocate_ip }}"
+          enabled: "{{ vip_enabled }}"
+          auto_allocate_floating_ip: "{{ vip_auto_allocate_floating_ip }}"
+          avi_allocated_vip: "{{ vip_avi_allocated_vip }}"
+          auto_allocate_ip_type: V4_ONLY
+          ip_address:
+            type: V4
+            addr: "{{ app_vip }}"
+
+    # Task to create virtualservice on the controller
+    # Here is the link to get more details of parametrs of this task
+    # https://github.com/avinetworks/ansible-role-avisdk/blob/master/library/avi_virtualservice.py
+    - name: "Avi Example | Create Virtualservice | {{ app_name }}"
+      avi_virtualservice:
+        avi_credentials: "{{ avi_credentials | default(omit)}}"
+        api_context: "{{avi_api_context | default(omit)}}"
+        state: present
+        tenant: "{{ tenant }}"
+        name: "{{ app_name }}"
+        services:
+          - port: "{{ service_port }}"
+            enable_ssl: "{{ set_ssl }}"
+        pool_ref: '/api/pool/?name={{ pool_name }}'
+        ssl_profile_ref: '/api/sslprofile/?name=System-Standard'
+        tenant_ref: "/api/tenant/?name={{ tenant }}"
+        cloud_ref: "/api/cloud/?name={{ cloud_name }}"
+        vsvip_ref: /api/vsvip/?name=vsvip-{{ app_name }}
