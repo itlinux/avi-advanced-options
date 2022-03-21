@@ -1,12 +1,43 @@
-# Log4j - CVE-2021-44228
+= Ansible Demo 
 
-This playbook will deploy a Pre-CRS group and log4j rules via following kb:
-https://kb.vmware.com/s/article/87100
 
-## How to use
+== Steps to create and add run the playbook
 
-Populate variables.yml file once completed
+Create two files:
+1 avictl.yml
+2 variables.yml 
 
-``` bash
-ansible-playbook pre-crs.yml --extra-vars=@variables.yml
-```
+The should look like this:
+----
+AVI_CREDENTIALS:
+  username: "admin"
+  password: "yourpassword"
+  controller: "yourcontroller"
+  api_version: "21.1.3"
+----
+
+The second is close to the avictl, which we use for creating the policy but this one we use to add a few rules.
+----
+AVI_CREDENTIALS:
+  username: "admin"
+  password: "yourpassword"
+  controller: "yourcontroller"
+  api_version: "21.1.3"
+
+WAF_POLICY_NAME: sample_wafpolicy
+ENFORCEMENT_MODE: enforcement  
+#options available: detecton/enforcement
+----
+
+=== Execute the playbook 
+
+.To create the policy
+----
+ansible-playbook  create_policy.yml -e=@avictl.yml
+----
+
+.Adding rules to the policy
+----
+ansible-playbook log4j-pre-crs.yml  -e @variables.yml
+----
+

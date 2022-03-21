@@ -59,7 +59,7 @@ We do have a main Terraform supported repo, which contains examples for AWS, jus
 Here is the official link:https://github.com/vmware/terraform-provider-avi[repo] +
 We do have a Terraform module, which deploys in all clouds, but it does leverage ansible for the configuration.
 
-The exercise will be in the xxxxxxxxxxx
+The exercise will be in the link:https://github.com/itlinux/avi-advanced-options[repo] +
 
 
 
