@@ -1,0 +1,60 @@
+= AviTools Overview 
+The container is designated to host all the required migration and verification tools needed in the field. 
+We are just using the default with a few updates, you could build your own version using the Dockerfile. 
+
+== Run Avitools
+We do have already some info on what we will do when we have out avitools up and running on the main repo Page. 
+
+.Start avitools
+----
+curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/run.sh
+----
+
+We will create the docker folder. From a Linux Box /opt/docker will be mapped to /opt/avi therefore when you docker exec it takes you right inside the folder.
+
+.Avitools run script 
+----
+mkdir /opt/mydocker
+mv run.sh /opt/
+chmod +x run.sh
+./run.sh -v 21.1.3 -c bash -d /opt/mydocker -b
+docker exec -it avitools bash
+----
+
+Once you go into the container, you will see the content of the /opt/avi which is what belongs into the mydocker folder. +
+Let's run the update to get the latest ansible and terraform. 
+
+.Ansible
+----
+pip3 uninstall ansible
+pip3 install --force-reinstall ansible ansible-core
+/usr/bin/python3.8 -m pip install --upgrade pip
+pip list
+----
+
+.Terraform
+----
+curl https://apt.releases.hashicorp.com/gpg | gpg --dearmor > hashicorp.gpg
+install -o root -g root -m 644 hashicorp.gpg /etc/apt/trusted.gpg.d/
+apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+apt install terraform
+which terraform
+mv /usr/local/bin/terraform /usr/local/bin/terraform.14
+ln -s /usr/bin/terraform /usr/local/bin/terraform
+terraform version
+    Terraform v1.1.7
+    on linux_amd64
+----
+
+Where to find the ansible convert in the avitools vs the controller. +
+The Avi Controller we map the options under the /opt/avi therefore to find the + 
+
+*ansible_config_converter.py* + 
+
+we will not be able to find that in the docker container under the /opt/avi as we mounted our folder. In fact, our python script is located in the +
+
+*/usr/local/lib/python3.8/dist-packages/avi/migrationtools/ansible* +
+
+
+
+
