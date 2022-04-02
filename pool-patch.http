@@ -1,0 +1,39 @@
+
+# @name login
+POST {{$dotenv avictl}}/login HTTP/1.1
+Accept: application/json,test/plain,*/*
+Host: {{$dotenv hostname}}
+Referer: {{$dotenv avictl}}
+X-Avi-Version: {{$dotenv apiversion}}
+Content-Type: application/json;charset=utf-8
+Cookie: avi-sessionid=
+
+{
+    "username": "{{$dotenv user}}",
+    "password": "{{$dotenv awspass}}"
+}
+
+###
+@csrf = loXlKM6mm3jt5SC0BcN2MMkkzmXAnD0D
+
+# @name pool
+GET https://{{$dotenv avictl}}/api/pool/?name={{$dotenv poolname}}
+X-CSRFToken: {{csrf}}
+Content-Type: application/json
+X-Avi-Version: {{$dotenv apiversion2}}
+
+###
+#<-- Have to copy/paste this from the Set-Cookie in the login response
+# @name pool
+PATCH {{$dotenv avictl}}/api/pool/{{pool.response.body.results.[*].uuid}}
+Accept: application/json,test/plain,*/*
+X-Avi-Version: {{$dotenv apiversion2}}
+X-CSRFToken: {{csrf}}
+Content-Type: application/json;charset=utf-8
+Referer: https://{{$dotenv avictl}}/
+
+{
+    "add": {
+     "lb_algorithm": "LB_ALGORITHM_ROUND_ROBIN"
+  }
+}

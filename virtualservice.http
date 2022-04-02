@@ -1,0 +1,63 @@
+
+# @name login
+
+POST {{$dotenv avictl}}/login HTTP/1.1
+Accept: application/json,test/plain,*/*
+Host: {{$dotenv hostname}}
+Referer: {{$dotenv avictl}}
+X-Avi-Version: {{$dotenv apiversion}}
+Content-Type: application/json;charset=utf-8
+Cookie: avi-sessionid=
+
+{
+    "username": "{{$dotenv user}}",
+    "password": "{{$dotenv awspass}}"
+}
+
+###
+@csrf = pYvQB1ruYAzsMKZAjGSETYb5z9SYlW1i
+
+###
+#<-- Have to copy/paste this from the Set-Cookie in the login response
+# @name vs
+
+POST https://{{$dotenv avictl}}/api/virtualservice/
+Accept: application/json,test/plain,*/*
+X-Avi-Version: {{$dotenv apiversion2}}
+X-CSRFToken: {{csrf}}
+Referer: https://{{$dotenv avictl}}/
+Content-Type: application/json;charset=utf-8
+
+   {
+    "name": "{{$dotenv app_name}}",
+    "enabled": true,
+    "cloud_ref": "/api/cloud/?name={{$dotenv cloud_aws}}",
+    "vsvip_ref": "/api/vsvip/?name={{$dotenv vsvip_name}}",
+        "services": [
+         {
+           "enable_ssl": false,
+              "port": 80
+           }
+        ],
+      "pool_ref": "/api/pool/?name={{$dotenv poolname}}"
+   }
+
+###
+# @name VS
+GET https://{{$dotenv avictl}}/api/virtualservice/?name={{$dotenv app_name}}
+Accept: application/json,test/plain,*/*
+X-Avi-Version: {{$dotenv apiversion2}}
+X-CSRFToken: {{csrf}}
+Referer: https://{{$dotenv avictl}}/
+Content-Type: Application/json
+###
+
+##@csrf = WxDXiS4fknBcBCDeszQiin9KTrQ60rIO
+
+###
+DELETE https://{{$dotenv avictl}}/api/virtualservice/{{VS.response.body.results.[*].uuid}}
+X-Avi-Version: {{$dotenv apiversion2}}
+Accept: application/json,test/plain,*/*
+X-CSRFToken: {{csrf}}
+Referer: https://{{$dotenv avictl}}
+X-Avi-Tenant: admin
