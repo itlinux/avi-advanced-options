@@ -36,7 +36,7 @@
       avi_api_update_method: "patch"
       tenant: "{{ TENANT }}"
       avi_api_patch_op: "add"
-      pre_crs_groups: 
+      pre_crs_groups:
       - name: "LOG4J-CVE-2021-44228"
         index: "{{ new_group_index | default(0)}}"
         enabled: true

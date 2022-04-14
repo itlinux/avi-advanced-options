@@ -1,23 +1,20 @@
 ---
 - hosts: localhost
   connection: local
-  gather_facts: false
-  vars:
-    - WAF_POLICY_NAME: "System-WAF-Policy"
-    - WAF_CRS: "CRS-2021-2"
-    - ENFORCEMENT_MODE: "WAF_MODE_ENFORCEMENT"
-    - POLICY_NAME: "sample_wafpolicy"
-  vars_files:
-    - "avictl.yml"
   collections:
     - vmware.alb
+  vars:
+    avi_credentials:
+      username: "admin"
+      password: "yourpass"
+      controller: "yourip"
+      api_version: "20.1.8"
+    name: ciao
+    waf_profile: "System-WAF-Profile"
   tasks:
     - name: Example to create WafPolicy object
       avi_wafpolicy:
-        avi_credentials: "{{ AVI_CREDENTIALS }}"
-        tenant: "{{ TENANT }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
-        name: "{{ POLICY_NAME }}"
-        waf_profile_ref: "/api/wafpolicy?name={{ WAF_POLICY_NAME }}"
-        waf_crs_ref: "/api/wafcrs?name={{ WAF_CRS }}"
-        mode: "{{ ENFORCEMENT_MODE }}"
+        name: "{{ name }}"
+        waf_profile_ref: "/api/wafprofile?name={{ waf_profile }}"
