@@ -1,11 +1,11 @@
-= Ansible Demo 
+= Ansible Demo
 
 
 == Steps to create and add run the playbook
 
 Create two files:
 1 avictl.yml
-2 variables.yml 
+2 variables.yml
 
 The should look like this:
 ----
@@ -16,20 +16,16 @@ AVI_CREDENTIALS:
   api_version: "21.1.3"
 ----
 
-The second is close to the avictl, which we use for creating the policy but this one we use to add a few rules.
+The update the create_policy file with the right vars
 ----
 AVI_CREDENTIALS:
   username: "admin"
   password: "yourpassword"
   controller: "yourcontroller"
   api_version: "21.1.3"
-
-WAF_POLICY_NAME: sample_wafpolicy
-ENFORCEMENT_MODE: enforcement  
-#options available: detecton/enforcement
 ----
 
-=== Execute the playbook 
+=== Execute the playbook
 
 .To create the policy
 ----
