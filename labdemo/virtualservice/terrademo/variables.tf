@@ -3,10 +3,10 @@ variable "avi_username" {
 variable "avi_password" {
 }
 variable "avi_controller_ips" {
-  default = ["52.52.33.59"]
+  default = ["54.177.105.171"]
 }
 variable "avi_version" {
-  default = "21.1.3"
+  default = "20.1.8"
 }
 variable "avi_tenant" {
   default = "admin"
@@ -21,16 +21,16 @@ variable "avi_terraform_vs_vip" {
   default = "10.0.1.100"
 }
 variable "server1_port" {
-  default = 8000
+  default = 81
 }
 variable "server2_port" {
-  default = 88
+  default = 80
 }
 variable "server1_ip" {
-  default = "10.10.10.33"
+  default = "10.0.1.95"
 }
 variable "server2_ip" {
-  default = "10.10.10.32"
+  default = "10.0.1.95"
 }
 variable "lb_algorithm" {
   default = "LB_ALGORITHM_ROUND_ROBIN"
@@ -65,3 +65,7 @@ variable "string_group_name" {
 variable "compression_setting" {
   default = false
 }
+variable "floating_ip" {
+  default = true
+}
+

@@ -97,7 +97,8 @@ resource "avi_poolgroup" "poolgroup1" {
 resource "avi_vsvip" "avi_vsvip_resource" {
   name = "terraform-vip_pool"
   vip {
-    vip_id = "0"
+    vip_id                    = "auto"
+    auto_allocate_floating_ip = var.floating_ip
     ip_address {
       type = "V4"
       addr = var.avi_terraform_vs_vip
