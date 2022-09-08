@@ -148,9 +148,18 @@ resource "avi_wafpolicy" "custom_waf_policy" {
        EOT
       rule_id      = "10009"
       tags         = []
-
      }
-       
+    rules {
+      enable       = true
+      index        = 9
+      is_sensitive = false
+      name         = "Rate Limiting - Demo"
+      rule         = <<EOT
+      SecRule REMOTE_ADDR "@unconditionalMatch"  "id:10042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
+      SecRule TX:rate_limit_token "@ratelimit 5 1m" 
+       EOT
+      rule_id      = "10042"
+      tags         = []
+     }
    }
-
 }
