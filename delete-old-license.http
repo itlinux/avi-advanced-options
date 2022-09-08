@@ -1,0 +1,24 @@
+# @name login
+POST {{$dotenv awsctl}}/login HTTP/1.1
+Accept: application/json,test/plain,*/*
+Host: {{$dotenv hostname}}
+Referer: {{$dotenv awsctl}}
+X-Avi-Version: {{$dotenv apiversion}}
+Content-Type: application/json;charset=utf-8
+Cookie: avi-sessionid=
+
+{
+    "username": "{{$dotenv user}}",
+    "password": "{{$dotenv tokenaws}}"
+}
+
+###
+@csrf = yourcsrf
+
+###
+Delete {{$dotenv awsctl}}/api/license/Eval
+Accept: application/json,test/plain,*/*
+X-Avi-Version: {{$dotenv apiversion}}
+X-CSRFToken: {{csrf}}
+Content-Type: application/json;charset=utf-8
+Referer: https://{{$dotenv awsctl}}/
