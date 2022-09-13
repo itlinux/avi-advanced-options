@@ -161,5 +161,16 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       rule_id      = "10042"
       tags         = []
      }
+     rules {
+      enable       = true
+      index        = 10
+      is_sensitive = false
+      name         = "Brute Force - Demo"
+      rule         = <<EOT
+      SecRule REMOTE_ADDR "@unconditionalMatch"  "id:10042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
+       EOT
+      rule_id      = "10043"
+      tags         = []
+     }
    }
 }
