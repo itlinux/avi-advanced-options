@@ -24,3 +24,7 @@ link:https://avinetworks.com/docs/21.1/api-guide/overview.html[Overview Headers 
 |Referer |*Yes NB: Mandatory for POST only*|Parent Page|Referer: http://10.10.10.10/
 |Accept-Encoding|*Yes NB: Mandatory for GET only*|Requested content format. Should be application/json|Accept-Encoding: application/json
 |====
+
+
+=== ENV File
+The env file is allowing us to store password, and other variables we will use in our http code. This will allow us to show our codes without showing the sensitive data. Furthermore, you can have multiple location, just use diff variable names to achieve that. The example has that already.
