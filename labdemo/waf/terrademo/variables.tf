@@ -3,11 +3,11 @@ variable "avi_password" {
 variable "avi_username" {}
 
 variable "avi_controller_ips" {
-  default = ["aws.remo.demoavi.us"]
+  default = ["tfctl.remo.demoavi.us"]
 }
 
 variable "avi_version" {
-  default = "21.1.3"
+  default = "21.1.4"
 }
 variable "avi_tenant" {
   default = "admin"

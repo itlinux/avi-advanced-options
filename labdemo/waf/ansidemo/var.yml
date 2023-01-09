@@ -5,5 +5,5 @@ AVI_CREDENTIALS:
   api_version: "20.1.8"
 TENANT: admin
 
-WAF_POLICY_NAME: ciao
+WAF_POLICY_NAME: System-WAF-Policy
 ENFORCEMENT_MODE: enforcement  #options available: detecton/enforcement

@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  connection: local
+  collections:
+    - vmware.alb
+  vars:
+    avi_credentials:
+      username: "admin"
+      password: "z>i&D_F:c:x="
+      controller: "54.176.60.159"
+      api_version: "20.1.8"
+    name: ciao
+    waf_profile: "System-WAF-Profile"
+    enforcement_mode: "WAF_MODE_ENFORCEMENT"
+  tasks:
+    - name: Example to create WafPolicy object
+      avi_wafpolicy:
+        avi_credentials: "{{ avi_credentials }}"
+        state: present
+        name: "{{ name }}"
+        waf_profile_ref: "/api/wafprofile?name={{ waf_profile }}"
+        mode: "{{ enforcement_mode }}"

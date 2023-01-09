@@ -1,39 +1,65 @@
 
 # @name login
-POST {{$dotenv avictl}}/login HTTP/1.1
+POST {{$dotenv awsctl}}/login HTTP/1.1
 Accept: application/json,test/plain,*/*
 Host: {{$dotenv hostname}}
-Referer: {{$dotenv avictl}}
+Referer: {{$dotenv awsctl}}
 X-Avi-Version: {{$dotenv apiversion}}
 Content-Type: application/json;charset=utf-8
 Cookie: avi-sessionid=
 
 {
     "username": "{{$dotenv user}}",
-    "password": "{{$dotenv awspass}}"
+    "password": "{{$dotenv tokenaws}}"
 }
 
+
+
 ###
-@csrf = loXlKM6mm3jt5SC0BcN2MMkkzmXAnD0D
+POST {{$dotenv awsctl}}/login HTTP/1.1
+Accept: application/json,test/plain,*/*
+Host: {{$dotenv hostname}}
+Referer: {{$dotenv awsctl}}
+X-Avi-Version: {{$dotenv apiversion}}
+Content-Type: application/json;charset=utf-8
+Cookie: avi-sessionid=
+
+{
+    "username": "admin",
+    "password": "dacbfa463d2a893f6760f719c824f2de19e9518f"
+}
+
+
+###
+@csrf = MbakPjDIxnVOpzjmos9bfHxKAIjUrPM4
 
 # @name pool
-GET https://{{$dotenv avictl}}/api/pool/?name={{$dotenv poolname}}
+GET https://{{$dotenv awsctl}}/api/pool/?name={{$dotenv poolaws}}
 X-CSRFToken: {{csrf}}
 Content-Type: application/json
-X-Avi-Version: {{$dotenv apiversion2}}
+X-Avi-Version: {{$dotenv apiversion}}
 
 ###
 #<-- Have to copy/paste this from the Set-Cookie in the login response
 # @name pool
-PATCH {{$dotenv avictl}}/api/pool/{{pool.response.body.results.[*].uuid}}
+PATCH {{$dotenv awsctl}}/api/pool/{{pool.response.body.results.[*].uuid}}
 Accept: application/json,test/plain,*/*
-X-Avi-Version: {{$dotenv apiversion2}}
+X-Avi-Version: {{$dotenv apiversion}}
 X-CSRFToken: {{csrf}}
 Content-Type: application/json;charset=utf-8
-Referer: https://{{$dotenv avictl}}/
+Referer: https://{{$dotenv awsctl}}/
 
 {
     "add": {
-     "lb_algorithm": "LB_ALGORITHM_ROUND_ROBIN"
+     "application_persistence_profile_ref": "/api/applicationpersistenceprofile/?name=System-Persistence-Http-Cookie"
   }
 }
+
+###
+
+Delete {{$dotenv awsctl}}/license/Eval
+Accept: application/json,test/plain,*/*
+X-Avi-Version: {{$dotenv apiversion}}
+X-CSRFToken: {{csrf}}
+Content-Type: application/json;charset=utf-8
+Referer: https://{{$dotenv awsctl}}/
