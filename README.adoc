@@ -232,3 +232,7 @@ vars_files:
 == Troubleshooting
 
 We will learn and look at the logs to be able to track down what has happened.
+
+
+== License Demo Removal
+The API file called delete-old-license.http allows you to remove the demo license that may have been expired and pop-us up to your env. Useful if you have a valid license. :) 
