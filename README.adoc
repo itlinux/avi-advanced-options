@@ -229,7 +229,7 @@ vars_files:
 ** *ansible-playbook avi_config.yml*
 
 == API Lab
-This lab details is under link:https://github.com/itlinux/avi-advanced-options[API Lab] +
+This lab details is under link:https://github.com/itlinux/avi-advanced-options/tree/main/labdemo/vscode[API Lab] +
 
 
 == Troubleshooting
