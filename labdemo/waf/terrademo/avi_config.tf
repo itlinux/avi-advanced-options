@@ -8,7 +8,7 @@ data "avi_wafprofile" "default_wafprofile" {
 
 resource "avi_wafpolicy" "custom_waf_policy" {
   mode            = "WAF_MODE_ENFORCEMENT"
-  name            = "custom_waf_policy"
+  name            = "demo_custom_waf_policy"
   waf_crs_ref     = data.avi_wafcrs.wafcrs_2020_3.id
   waf_profile_ref = data.avi_wafprofile.default_wafprofile.id
 
@@ -67,7 +67,7 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "1 - Maximum JSON Parsing Depth"
       rule         = "SecRule ARGS_NAMES \"@rx (\\.[^\\.]*){2}\" \"id:10001,phase:2,t:none,block,msg:'Exceeded maximum JSON nested structure depth'\""
-      rule_id      = "10001"
+      rule_id      = "11001"
       tags         = []
     }
     rules {
@@ -76,7 +76,7 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "2 - Maximum value length"
       rule         = "SecRule ARGS \"@ge 100\" \"id:10002,phase:2,t:none,t:length,block,msg:'JSON value too long'\""
-      rule_id      = "10002"
+      rule_id      = "11002"
       tags         = []
     }
     rules {
@@ -85,7 +85,7 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "3a - Enable raw request body processing"
       rule         = "SecRule REQUEST_URI \"@unconditionalMatch\" \"id:10003,phase:1,pass,ctl:forceRequestBodyVariable=On\""
-      rule_id      = "10003"
+      rule_id      = "11003"
       tags         = []
     }
     rules {
@@ -94,7 +94,7 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "3b - Maximum request body size"
       rule         = "SecRule REQUEST_BODY_LENGTH \"@ge 150\" \"id:10004,phase:2,t:none,block,msg:'Request mody size too long'\""
-      rule_id      = "10004"
+      rule_id      = "11004"
       tags         = []
     }
 
@@ -108,7 +108,7 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "4a - Count lengths of JSON arrays"
       rule         = "SecRule ARGS_NAMES \"@unconditionalMatch\" \"id:10005,phase:2,pass,setvar:'TX.count_%%{MATCHED_VAR_NAME}=+1'\""
-      rule_id      = "10005"
+      rule_id      = "11005"
       tags         = []
     }
     rules {
@@ -117,7 +117,7 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "4b - Limit lengths of JSON arrays"
       rule         = "SecRule TX:/count_.*/  \"@gt 2\" \"id:10006,phase:2,t:none,block,msg:'JSON array has too many elements'\""
-      rule_id      = "10006"
+      rule_id      = "11006"
       tags         = []
     }
     rules {
@@ -126,14 +126,14 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "2 - Alternative max value length"
       rule         = "SecRule ARGS \"@rx ^.{101}\" \"id:10007,phase:2,t:none,block,msg:'JSON value too long'\""
-      rule_id      = "10007"
+      rule_id      = "11007"
       tags         = []
     }
     rules {
       enable       = true
       index        = 7
       is_sensitive = false
-      name         = "22060 | Demo vulnerability"
+      name         = "25060 | Demo vulnerability"
       rule         = "SecRule REQUEST_HEADERS:Host \"192.168.1.100\" \"id:'1011', phase:1,t:none,nolog,pass,ctl:ruleRemoveById=960017\""
       rule_id      = "10008"
       tags         = []
@@ -142,7 +142,7 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       enable       = true
       index        = 8
       is_sensitive = false
-      name         = "22061 | Log4j2-Demo 1 vulnerability"
+      name         = "25061 | Log4j2-Demo 1 vulnerability"
       rule         = <<EOT
       SecRule REQUEST_LINE|ARGS|ARGS_NAMES|REQUEST_COOKIES|REQUEST_COOKIES_NAMES|REQUEST_BODY|REQUEST_HEADERS|XML:/*|XML://@* "@rx \$${(?:jndi|java):" "id:4022060, phase:2, block, t:none, t:lowercase, t:urlDecodeUni, msg:'CVE-2021-44228 log4j2 vulnerability', tag:'language-java', tag:'attack-multi', tag:'attack-rce', tag:'paranoia-level/1', tag:'CAPEC-152', tag:'CAPEC-242', tag:'CRS-group-402', ver:'AVI_CRS/2021_3', severity:'CRITICAL', multiMatch, setvar:'tx.anomaly_score_pl1=+%%{tx.critical_anomaly_score}', setvar:'tx.rce_score=+%%{tx.critical_anomaly_score}'" 
        EOT
@@ -155,10 +155,10 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "Rate Limiting - Demo"
       rule         = <<EOT
-      SecRule REMOTE_ADDR "@unconditionalMatch"  "id:10042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
+      SecRule REMOTE_ADDR "@unconditionalMatch"  "id:11042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
       SecRule TX:rate_limit_token "@ratelimit 5 1m" 
        EOT
-      rule_id      = "10042"
+      rule_id      = "11042"
       tags         = []
      }
      rules {
@@ -167,9 +167,9 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       is_sensitive = false
       name         = "Brute Force - Demo"
       rule         = <<EOT
-      SecRule REMOTE_ADDR "@unconditionalMatch"  "id:10042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
+      SecRule REMOTE_ADDR "@unconditionalMatch"  "id:12042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
        EOT
-      rule_id      = "10043"
+      rule_id      = "12043"
       tags         = []
      }
    }
