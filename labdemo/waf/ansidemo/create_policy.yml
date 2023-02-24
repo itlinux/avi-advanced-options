@@ -6,9 +6,9 @@
   vars:
     avi_credentials:
       username: "admin"
-      password: "youpass"
+      password: "yourpass"
       controller: "yourip"
-      api_version: "20.1.8"
+      api_version: "21.1.4"
     name: ciao
     waf_profile: "System-WAF-Profile"
     enforcement_mode: "WAF_MODE_ENFORCEMENT"

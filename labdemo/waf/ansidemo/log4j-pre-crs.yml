@@ -11,6 +11,7 @@
     - vmware.alb
   tasks:
   # Collect existing WAFPolicy Configuration
+
   - name: Check Existing Pre-CRS Rules
     avi_api_session:
       avi_credentials: "{{ AVI_CREDENTIALS }}"
@@ -29,6 +30,7 @@
     when: wafpolicyoutput['obj']['results'][0]['pre_crs_groups'] is defined and wafpolicyoutput['obj']['results'][0]['pre_crs_groups']|length>0  #only executes if groups exist currently
     tags:
       - session2
+
   - name: Apply new PreCRS Group and Rules
     avi_wafpolicy:
       avi_credentials: "{{ AVI_CREDENTIALS }}"
@@ -43,3 +45,5 @@
         rules: "{{ CVE_2021_44228 }}"
       waf_profile_ref: "{{ wafpolicyoutput['obj']['results'][0]['waf_profile_ref'] }}"
     when: wafpolicyoutput['obj']['results'][0]['pre_crs_groups'] is not defined or wafpolicyoutput['obj']['results'][0]['pre_crs_groups'] | selectattr('index','equalto',new_group_index) | list | count == 0  #Checks that no indexes match one defined in set_fact
+    tags:
+      - session3

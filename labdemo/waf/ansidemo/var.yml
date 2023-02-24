@@ -1,8 +1,8 @@
 AVI_CREDENTIALS:
   username: "admin"
-  password: "z>i&D_F:c:x="
-  controller: "54.176.60.159"
-  api_version: "20.1.8"
+  password: "{{ avi_password }}"
+  controller: "tfctl.remo.demoavi.us"
+  api_version: "21.1.4"
 TENANT: admin
 
 WAF_POLICY_NAME: System-WAF-Policy
