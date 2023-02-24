@@ -43,5 +43,13 @@ localhost                  : ok=1    changed=1    unreachable=0    failed=0    s
 
 .Adding rules to the policy
 ----
-ansible-playbook log4j-pre-crs.yml  -e @variables.yml
+ansible-playbook log4j-pre-crs.yml  -e @variables.yml --ask-vault-pass
 ----
+
+.All in one policy and rules
+----
+ansible-playbook allinone.yml -e @variables.yml --ask-vault-pass
+----
+
+== VAULT
+I am using the vault on mine now, therefore you will need to replace the file demo under the group_vars/all. If you are not familiar with ansible vault use this page https://docs.ansible.com/ansible/2.8/user_guide/vault.html
