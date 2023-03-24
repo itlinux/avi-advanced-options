@@ -138,17 +138,17 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       rule_id      = "10008"
       tags         = []
     }
-    rules {
-      enable       = true
-      index        = 8
-      is_sensitive = false
-      name         = "25061 | Log4j2-Demo 1 vulnerability"
-      rule         = <<EOT
-      SecRule REQUEST_LINE|ARGS|ARGS_NAMES|REQUEST_COOKIES|REQUEST_COOKIES_NAMES|REQUEST_BODY|REQUEST_HEADERS|XML:/*|XML://@* "@rx \$${(?:jndi|java):" "id:4022060, phase:2, block, t:none, t:lowercase, t:urlDecodeUni, msg:'CVE-2021-44228 log4j2 vulnerability', tag:'language-java', tag:'attack-multi', tag:'attack-rce', tag:'paranoia-level/1', tag:'CAPEC-152', tag:'CAPEC-242', tag:'CRS-group-402', ver:'AVI_CRS/2021_3', severity:'CRITICAL', multiMatch, setvar:'tx.anomaly_score_pl1=+%%{tx.critical_anomaly_score}', setvar:'tx.rce_score=+%%{tx.critical_anomaly_score}'" 
-       EOT
-      rule_id      = "10009"
-      tags         = []
-     }
+    # rules {
+    #   enable       = true
+    #   index        = 8
+    #   is_sensitive = false
+    #   name         = "25061 | Log4j2-Demo 1 vulnerability"
+    #   rule         = <<EOT
+    #   SecRule REQUEST_LINE|ARGS|ARGS_NAMES|REQUEST_COOKIES|REQUEST_COOKIES_NAMES|REQUEST_BODY|REQUEST_HEADERS|XML:/*|XML://@* "@rx \$${(?:jndi|java):" "id:4022061 phase:2, block, t:none, t:lowercase, t:urlDecodeUni, msg:'CVE-2021-44228 log4j2 vulnerability', tag:'language-java', tag:'attack-multi', tag:'attack-rce', tag:'paranoia-level/1', tag:'CAPEC-152', tag:'CAPEC-242', tag:'CRS-group-402', ver:'AVI_CRS/2021_3', severity:'CRITICAL', multiMatch, setvar:'tx.anomaly_score_pl1=+%%{tx.critical_anomaly_score}', setvar:'tx.rce_score=+%%{tx.critical_anomaly_score}'" 
+    #    EOT
+    #   rule_id      = "10009"
+    #   tags         = []
+    #  }
     rules {
       enable       = true
       index        = 9

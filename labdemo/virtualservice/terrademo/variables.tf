@@ -3,10 +3,10 @@ variable "avi_username" {
 variable "avi_password" {
 }
 variable "avi_controller_ips" {
-  default = ["54.177.105.171"]
+  default = ["154.219.78.19"]
 }
 variable "avi_version" {
-  default = "20.1.8"
+  default = "22.1.3"
 }
 variable "avi_tenant" {
   default = "admin"
@@ -27,10 +27,10 @@ variable "server2_port" {
   default = 80
 }
 variable "server1_ip" {
-  default = "10.0.1.95"
+  default = "10.0.1.57"
 }
 variable "server2_ip" {
-  default = "10.0.1.95"
+  default = "10.0.1.57"
 }
 variable "lb_algorithm" {
   default = "LB_ALGORITHM_ROUND_ROBIN"
@@ -42,7 +42,7 @@ variable "poolgroup_name" {
   default = "demo_poolgroup_one"
 }
 variable "vs_port" {
-  default = "80"
+  default = "81"
 }
 variable "vs_port_1" {
   default = "82"

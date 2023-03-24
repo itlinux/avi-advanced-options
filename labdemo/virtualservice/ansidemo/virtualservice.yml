@@ -17,16 +17,19 @@
         description: "{{ pool_description }}"
         api_version: "{{ avi_version }}"
         state: "{{ state }}"
-        health_monitor_refs:
-            - '/api/healthmonitor?name={{ hmonitor }}'
+          #health_monitor_refs:
+          #  - '/api/healthmonitor?name={{ hmonitor }}'
         servers:
             - ip:
                 addr: "{{ IP1 }}"
                 type: V4
+              port: 82
             - ip:
                 addr: "{{ IP2 }}"
                 type: V4
-
+              port: 81
+      tags:
+        - Pool
     - name: "Avi Example | Create VS VIP | {{ app_name }}"
       avi_vsvip:
         name: vsvip-{{ app_name }}
@@ -46,13 +49,15 @@
           ip_address:
             type: V4
             addr: "{{ app_vip }}"
-
+      tags:
+        vip
     # Task to create virtualservice on the controller
     # Here is the link to get more details of parametrs of this task
     # https://github.com/avinetworks/ansible-role-avisdk/blob/master/library/avi_virtualservice.py
     - name: "Avi Example | Create Virtualservice | {{ app_name }}"
       avi_virtualservice:
         avi_credentials: "{{ avi_credentials | default(omit)}}"
+        application_profile_ref: "/api/applicationprofile/?name=System-Secure-HTTP"
         api_context: "{{avi_api_context | default(omit)}}"
         state: "{{ state }}"
         tenant: "{{ tenant }}"
@@ -60,6 +65,8 @@
         services:
           - port: "{{ service_port }}"
             enable_ssl: "{{ set_ssl }}"
+          - port: "{{ service_port2 }}"
+            enable_ssl: "{{ set_ssl2 }}"
         pool_ref: '/api/pool/?name={{ pool_name }}'
         ssl_profile_ref: '/api/sslprofile/?name=System-Standard'
         tenant_ref: "/api/tenant/?name={{ tenant }}"
