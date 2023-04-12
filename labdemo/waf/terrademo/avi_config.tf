@@ -133,22 +133,22 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       enable       = true
       index        = 7
       is_sensitive = false
-      name         = "25060 | Demo vulnerability"
+      name         = "25060 | Demo Vulnerability"
       rule         = "SecRule REQUEST_HEADERS:Host \"192.168.1.100\" \"id:'1011', phase:1,t:none,nolog,pass,ctl:ruleRemoveById=960017\""
       rule_id      = "10008"
       tags         = []
     }
-    # rules {
-    #   enable       = true
-    #   index        = 8
-    #   is_sensitive = false
-    #   name         = "25061 | Log4j2-Demo 1 vulnerability"
-    #   rule         = <<EOT
-    #   SecRule REQUEST_LINE|ARGS|ARGS_NAMES|REQUEST_COOKIES|REQUEST_COOKIES_NAMES|REQUEST_BODY|REQUEST_HEADERS|XML:/*|XML://@* "@rx \$${(?:jndi|java):" "id:4022061 phase:2, block, t:none, t:lowercase, t:urlDecodeUni, msg:'CVE-2021-44228 log4j2 vulnerability', tag:'language-java', tag:'attack-multi', tag:'attack-rce', tag:'paranoia-level/1', tag:'CAPEC-152', tag:'CAPEC-242', tag:'CRS-group-402', ver:'AVI_CRS/2021_3', severity:'CRITICAL', multiMatch, setvar:'tx.anomaly_score_pl1=+%%{tx.critical_anomaly_score}', setvar:'tx.rce_score=+%%{tx.critical_anomaly_score}'" 
-    #    EOT
-    #   rule_id      = "10009"
-    #   tags         = []
-    #  }
+     rules {
+       enable       = true
+       index        = 8
+       is_sensitive = false
+       name         = "25061 | Remo Log4j2-Demo Vulnerability"
+       rule         = <<EOT
+       SecRule REQUEST_LINE|ARGS|ARGS_NAMES|REQUEST_COOKIES|REQUEST_COOKIES_NAMES|REQUEST_BODY|REQUEST_HEADERS|XML:/*|XML://@* "@rx \$${[^}]{0,4}\$${" "id:4099844,phase:2,block,t:none,t:lowercase,t:urlDecodeUni,multimatch,msg:'CVE-2021-4422 / CVE-2021-45046 log4j vulnerability evasion', tag:'attack-rce', tag:'paranoia-level/1', severity:'CRITICAL'"
+        EOT
+       rule_id      = "210009"
+       tags         = []
+      }
     rules {
       enable       = true
       index        = 9
@@ -156,9 +156,9 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       name         = "Rate Limiting - Demo"
       rule         = <<EOT
       SecRule REMOTE_ADDR "@unconditionalMatch"  "id:11042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
-      SecRule TX:rate_limit_token "@ratelimit 5 1m" 
+      SecRule TX:rate_limit_token "@ratelimit 5 1m"
        EOT
-      rule_id      = "11042"
+      rule_id      = "211042"
       tags         = []
      }
      rules {
@@ -169,8 +169,11 @@ resource "avi_wafpolicy" "custom_waf_policy" {
       rule         = <<EOT
       SecRule REMOTE_ADDR "@unconditionalMatch"  "id:12042,phase:2,t:none,block,setvar:'TX.rate_limit_token=%%{REMOTE_ADDR}-%%{REQUEST_URI}',chain"
        EOT
-      rule_id      = "12043"
+      rule_id      = "212043"
       tags         = []
      }
    }
 }
+# old rule Log4j2 Demo
+#SecRule REQUEST_LINE|ARGS|ARGS_NAMES|REQUEST_COOKIES|REQUEST_COOKIES_NAMES|REQUEST_BODY|REQUEST_HEADERS|XML:/*|XML://@* "@rx \$${(?:jndi|java):" "id:4122061 phase:2,t:none,t:lowercase, t:urlDecodeUni,msg:'CVE-2021-44228 log4j2 vulnerability', tag:'language-java', tag:'attack-multi', tag:'attack-rce', tag:'paranoia-level/1', tag:'CAPEC-152', tag:'CAPEC-242', tag:'CRS-group-402', ver:'AVI_CRS/2021_3', severity:'CRITICAL', multiMatch, setvar:'tx.anomaly_score_pl1=+%%{tx.critical_anomaly_score}', setvar:'tx.rce_score=+%%{tx.critical_anomaly_score}'"
+
