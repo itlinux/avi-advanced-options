@@ -12,7 +12,7 @@ Content-Type: application/json
 @username = admin
 
 POST {{baseurl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{hostname}}
 X-Avi-Version: {{apiversion}}
 Content-Type: application/json;charset=utf-8
@@ -39,7 +39,7 @@ Content-Type: application/json
 
 # @name login
 POST {{$dotenv avictl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 X-Avi-Version: {{$dotenv apiversion}}
 Content-Type: application/json;charset=utf-8
@@ -57,7 +57,7 @@ Cookie: avi-sessionid=
 
 # @name pool
 POST {{baseurl}}/api/pool HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 X-Avi-Version: {{$dotenv apiversion}}
 X-CSRFToken: {{csrf}}
@@ -91,7 +91,7 @@ Content-Type: application/json;charset=utf-8
 ###
 # @name poolresults
 POST {{$dotenv avictl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 X-Avi-Version: {{$dotenv apiversion}}
 Content-Type: application/json;charset=utf-8
 Cookie: avi-sessionid=
