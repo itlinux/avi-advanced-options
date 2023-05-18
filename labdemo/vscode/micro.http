@@ -1,6 +1,6 @@
 # @name login
 POST {{$dotenv avictl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 X-Avi-Version: {{$dotenv apiversion}}
 Content-Type: application/json;charset=utf-8
@@ -8,17 +8,17 @@ Cookie: avi-sessionid=
 
 {
     "username": "{{$dotenv user}}",
-    "password": "{{$dotenv awspass}}"
+    "password": "{{$dotenv awstoken}}"
 }
 
 ###
 
-@csrf = QJLYlz601XXfxFY5bCg8v1XjEeIpSgzx
+@csrf = qA03gWatYXkec3EJBdKufmSFhDoVjdJL
 
 ###
 POST {{$dotenv avictl}}/api/macro
-Accept: application/json,test/plain,*/*
-X-Avi-Version: {{$dotenv apiversion2}}
+Accept: application/json,text/plain,*/*
+X-Avi-Version: {{$dotenv apiversion}}
 X-CSRFToken: {{csrf}}
 Referer: https://{{$dotenv avictl}}/
 Content-Type: application/json;charset=utf-8
@@ -93,7 +93,8 @@ Content-Type: application/json;charset=utf-8
                             "ratio": 1,
                             "ip": {
                                 "type": "V4",
-                                "addr": "10.0.1.14"
+                                "port": "80",
+                                "addr": "10.0.1.39"
                             },
                             "hostname": "server1.template.com",
                             "enabled": true
@@ -139,7 +140,7 @@ Content-Type: application/json;charset=utf-8
                 },
                 "application_profile_ref_data": {
                     "type": "APPLICATION_PROFILE_TYPE_HTTP",
-                    "name": "application_profile_l7proxy_template",
+                    "name": "/api/applicationprofile?name=System-HTTP",
                     "tenant_ref": "/api/tenant?name=admin",
                     "http_profile": {
                         "xff_enabled": true,
@@ -233,7 +234,8 @@ Content-Type: application/json;charset=utf-8
                                                         "ratio": 1,
                                                         "ip": {
                                                             "type": "V4",
-                                                            "addr": "10.0.1.15"
+                                                            "port": "81",
+                                                            "addr": "10.0.1.39"
                                                         },
                                                         "hostname": "server1.template.com",
                                                         "enabled": true
@@ -284,14 +286,14 @@ Content-Type: application/json;charset=utf-8
 # @name vs_l7proxy
 GET https://{{$dotenv avictl}}/api/virtualservice/?name={{$dotenv app_macro}}
 X-CSRFToken: {{csrf}}
-X-Avi-Version: {{$dotenv apiversion2}}
+X-Avi-Version: {{$dotenv apiversion}}
 ###
 
 
 DELETE https://{{$dotenv avictl}}/api/macro
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Referer: https://{{$dotenv avictl}}/
-X-Avi-Version: {{$dotenv apiversion2}}
+X-Avi-Version: {{$dotenv apiversion}}
 Content-Type: application/json;charset=utf-8
 X-CSRFToken: {{csrf}}
 

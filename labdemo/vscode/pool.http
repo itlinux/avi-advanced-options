@@ -1,7 +1,7 @@
 
 # @name login
 POST {{$dotenv avictl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 Referer: {{$dotenv avictl}}
 X-Avi-Version: {{$dotenv apiversion}}
@@ -18,7 +18,7 @@ Cookie: avi-sessionid=
 #<-- Have to copy/paste this from the Set-Cookie in the login response
 # @name pool
 POST {{$dotenv avictl}}/api/pool HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 X-Avi-Version: {{$dotenv apiversion2}}
 X-CSRFToken: {{csrf}}
 Content-Type: application/json;charset=utf-8

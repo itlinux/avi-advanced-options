@@ -8,7 +8,7 @@
 
 # @name login
 POST {{baseurl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 X-Avi-Version: {{$dotenv apiversion}}
 Content-Type: application/json;charset=utf-8
@@ -26,7 +26,7 @@ Cookie: avi-sessionid=
 
 # @name vsvip
 POST {{baseurl}}/api/vsvip HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 X-Avi-Version: {{$dotenv apiversion}}
 X-CSRFToken: {{csrf}}
@@ -55,7 +55,7 @@ Referer: https://{{$dotenv hostname}}/
 
 # @name login
 POST {{baseurl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 X-Avi-Version: {{$dotenv apiversion}}
 Content-Type: application/json;charset=utf-8
@@ -72,7 +72,7 @@ Cookie: avi-sessionid=
 
 # @name vsvip
 POST {{baseurl}}/api/vsvip HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 X-Avi-Version: {{$dotenv apiversion}}
 X-CSRFToken: {{csrf}}

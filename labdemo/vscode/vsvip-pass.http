@@ -1,6 +1,6 @@
 # @name login
 POST {{$dotenv avictl}}/login HTTP/1.1
-Accept: application/json,test/plain,*/*
+Accept: application/json,text/plain,*/*
 Host: {{$dotenv hostname}}
 Referer: {{$dotenv avictl}}
 X-Avi-Version: {{$dotenv apiversion}}
@@ -9,17 +9,17 @@ Cookie: avi-sessionid=
 
 {
     "username": "{{$dotenv user}}",
-    "password": "{{$dotenv awspass}}"
+    "password": "{{$dotenv awstoken}}"
 }
 
 ###
-@csrf = fbzWNgXgXxcGaewtbDguOsPURNFjFfHT
+@csrf = iV9LyBUFJ3QxDdAZijg0qYn9AcUHhqe1
 #<-- Have to copy/paste this from the Set-Cookie in the login response
 
 # @name vsvip
 POST {{$dotenv avictl}}/api/vsvip HTTP/1.1
-Accept: application/json,test/plain,*/*
-X-Avi-Version: {{$dotenv apiversion2}}
+Accept: application/json,text/plain,*/*
+X-Avi-Version: {{$dotenv apiversion}}
 X-CSRFToken: {{csrf}}
 Content-Type: application/json;charset=utf-8
 Referer: https://{{$dotenv avictl}}/
@@ -29,6 +29,7 @@ Referer: https://{{$dotenv avictl}}/
     "cloud_ref": "/api/cloud?name={{$dotenv cloud_aws}}",
     "vip": [
         {
+            "auto_allocate_floating_ip": true,
             "enabled": true,
             "vip_id": "1",
             "ip_address": {
